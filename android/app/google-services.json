@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1095753610794",
+    "firebase_url": "https://storygram-45169.firebaseio.com",
+    "project_id": "storygram-45169",
+    "storage_bucket": "storygram-45169.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095753610794:android:f82f1c284b2255fb317553",
+        "android_client_info": {
+          "package_name": "com.kattansoftware.storygram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095753610794-160shaq4c3b31hd6b1csnk4hs61vcbk2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kattansoftware.storygram",
+            "certificate_hash": "26e9f33292cf394d4c2093daf826cd83a21c802b"
+          }
+        },
+        {
+          "client_id": "1095753610794-8hcb2heek517jb3ou1fk5ajt76e2h7q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsfvD3PFY0jX7ggsq4xOYojm6NGtoVomY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095753610794-8hcb2heek517jb3ou1fk5ajt76e2h7q5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
