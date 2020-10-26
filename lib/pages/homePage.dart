@@ -64,7 +64,8 @@ class _HomePageState extends State<HomePage> {
               label: Text('logout')),
           // TimeLinePage(),
           NotificationsPage(),
-          UpLoadPage(),
+          //argment to up load page
+          UpLoadPage(gCurrentUser:currentUser),
           SearchPage(),
           ProfilePage(),
         ],

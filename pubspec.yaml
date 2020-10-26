@@ -33,7 +33,7 @@ dependencies:
   timeago:
   cached_network_image:
   firebase_auth:
-  geolocator:
+  geolocator: '^5.0.0'
   uuid:
   path_provider:
   firebase_messaging:
