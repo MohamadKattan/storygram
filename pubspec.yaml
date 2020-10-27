@@ -35,12 +35,14 @@ dependencies:
   firebase_auth:
   geolocator: '^5.0.0'
   uuid:
-  path_provider:
+  path_provider: ^1.6.22
   firebase_messaging:
   firebase_storage:
   flutter_svg:
   cupertino_icons: ^0.1.3
-
+^1:
+  6:
+    22:
 dev_dependencies:
   flutter_test:
     sdk: flutter
