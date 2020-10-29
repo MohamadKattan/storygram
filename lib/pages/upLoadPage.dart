@@ -199,9 +199,9 @@ class _UpLoadPageState extends State<UpLoadPage> {
     loctionTextEditingController.clear();
     descriptionTextEditingController.clear();
     setState(() {
-      file=null;
-      uploading=false;
-      postId=Uuid().v4();
+      file = null;
+      uploading = false;
+      postId = Uuid().v4();
     });
   }
 
@@ -241,7 +241,7 @@ class _UpLoadPageState extends State<UpLoadPage> {
       ),
       body: ListView(
         children: <Widget>[
-          uploading?linerProgres():Text(''),
+          uploading ? linerProgres() : Text(''),
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
               height: 230.0,

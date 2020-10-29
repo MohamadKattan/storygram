@@ -10,12 +10,13 @@ import 'package:storygram/pages/createAccountPage.dart';
 import 'package:storygram/pages/notifictionsPage.dart';
 import 'package:storygram/pages/profilePage.dart';
 import 'package:storygram/pages/searchPage.dart';
+import 'package:storygram/pages/timeLinePage.dart';
 import 'package:storygram/pages/upLoadPage.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersReference = FirebaseFirestore.instance.collection(kAuthCollection);
-final StorageReference storageReference = FirebaseStorage.instance.ref().child(kPostsPictures);
+final StorageReference storageReference =
+    FirebaseStorage.instance.ref().child(kPostsPictures);
 final postsReference = FirebaseFirestore.instance.collection(kPostFirebase);
 
 final DateTime timestamp = DateTime.now();
@@ -58,20 +59,16 @@ class _HomePageState extends State<HomePage> {
 
   //if user singinIn pushto homeScreen
   Scaffold buildHomeScreen() {
-    // return RaisedButton.icon(onPressed:logoutUser, icon: Icon(Icons.clear), label: Text('logout'));
     return Scaffold(
       body: PageView(
         children: [
-          RaisedButton.icon(
-              onPressed: logoutUser,
-              icon: Icon(Icons.clear),
-              label: Text('logout')),
-          // TimeLinePage(),
+          TimeLinePage(),
           NotificationsPage(),
-          //argment to up load page
-          UpLoadPage(gCurrentUser:currentUser),
+          //argment to upload page
+          UpLoadPage(gCurrentUser: currentUser),
           SearchPage(),
-          ProfilePage(),
+          //argment to profilrPage
+          ProfilePage(userProfileId: currentUser.id),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,
@@ -184,15 +181,14 @@ class _HomePageState extends State<HomePage> {
   saveUserInfoToFireStore() async {
     //***
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    DocumentSnapshot doc =
-        await usersReference.doc(user.id).get();
+    DocumentSnapshot doc = await usersReference.doc(user.id).get();
 
     if (!doc.exists) {
       final username = await Navigator.push(context,
           MaterialPageRoute(builder: (context) => CreateAccountPage()));
       //This for upload data to firestore
       usersReference.doc(user.id).set({
-        'id': user.id,  
+        'id': user.id,
         ' displayName': user.displayName,
         'username': username,
         'photoUrl': user.photoUrl,
