@@ -20,7 +20,7 @@ const kEmail='email';
 const kphotoUrl='photoUrl';
 const kbio='bio';
 const kdisplayName='displayName';
-// this for storage and fireStore postes
+// this for storage and fireStore postes set
 const kPostsPictures='PostsPictures';
 const kPostFirebase='PostFirebase';
 const kurl = 'url';

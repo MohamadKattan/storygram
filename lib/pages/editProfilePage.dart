@@ -54,7 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ],
       ),
       body: loading
-          ? CircularProgres()
+          ? circularProgres()
           : ListView(
               children: <Widget>[
                 Container(

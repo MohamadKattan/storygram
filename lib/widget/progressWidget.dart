@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // ignore: non_constant_identifier_names
-CircularProgres(){
+circularProgres(){
   return Container(
     alignment: Alignment.center,
     padding: EdgeInsets.only(top: 12.0),

@@ -95,7 +95,7 @@ class _SearchPageState extends State<SearchPage>
       future: futureSearchResults,
       builder: (context, dataSnapshot) {
         if (!dataSnapshot.hasData) {
-          return CircularProgres();
+          return circularProgres();
         }
         List<UserResult> searchUserResult = [];
         dataSnapshot.data.docs.forEach((document) {

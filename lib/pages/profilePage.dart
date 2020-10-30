@@ -26,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
       future: usersReference.doc(widget.userProfileId.id.toString()).get(),
       builder: (context, dataSnapShot) {
         if (!dataSnapShot.hasData) {
-          return CircularProgres();
+          return circularProgres();
         }
         User user = User.fromDocument(dataSnapShot.data);
         return Padding(
