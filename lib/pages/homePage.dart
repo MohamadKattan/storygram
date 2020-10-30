@@ -18,7 +18,6 @@ final usersReference = FirebaseFirestore.instance.collection(kAuthCollection);
 final StorageReference storageReference =
     FirebaseStorage.instance.ref().child(kPostsPictures);
 final postsReference = FirebaseFirestore.instance.collection(kPostFirebase);
-
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -68,7 +67,7 @@ class _HomePageState extends State<HomePage> {
           UpLoadPage(gCurrentUser: currentUser),
           SearchPage(),
           //argment to profilrPage
-           ProfilePage(  userProfileId: currentUser.id),
+          ProfilePage(userProfileId: currentUser),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,

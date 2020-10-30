@@ -114,7 +114,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 // for edite new name
   Column createProfileNameTextFormFailed() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(top: 13.0),
@@ -124,10 +124,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         TextField(
+          style: TextStyle(color:Colors.white),
           controller: profileNameTextEditingController,
           decoration: (InputDecoration(
-              hintText: 'Write Your User Name ',labelStyle: (TextStyle(color: Colors.white)),
-              hintStyle: TextStyle(color: Colors.white),
+              hintText: 'Write Your User Name ',
+              // ignore: unrelated_type_equality_checks
+              hintStyle: TextStyle(color:Colors.white),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
@@ -144,7 +146,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 // for edite new bio
   Column createBioTextFormFailed() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(top: 13.0),
@@ -154,6 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         TextField(
+          style: TextStyle(color:Colors.white),
           controller: bioTextEditingController,
           decoration: (InputDecoration(
               hintText: 'Write Your Bio ',labelStyle: (TextStyle(color: Colors.white)),

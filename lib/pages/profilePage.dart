@@ -10,7 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfilePage extends StatefulWidget {
   //argment from homepage for get dat from User
-  final String userProfileId;
+  final User userProfileId;
   ProfilePage({this.userProfileId});
 
   @override
@@ -22,8 +22,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final String currentOnlineUserId = currentUser?.id;
   // this method for view data profile
   creatProfileTopView() {
-    return FutureBuilder<DocumentSnapshot>(
-      future: usersReference.doc(widget.userProfileId).get(),
+    return FutureBuilder(
+      future: usersReference.doc(widget.userProfileId.id.toString()).get(),
       builder: (context, dataSnapShot) {
         if (!dataSnapShot.hasData) {
           return CircularProgres();
@@ -55,9 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            // *2 this for follow/UnFollowButton
+                          children: [
                             createButton(),
                           ],
                         ),
@@ -69,9 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding:EdgeInsets.only(top:13.0),
+                  padding: EdgeInsets.only(top: 13.0),
                   child: Text(
-                    user.username,
+                    user.username.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 14.0),
                   ),
                 ),
@@ -79,9 +77,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding:EdgeInsets.only(top:5.0),
+                  padding: EdgeInsets.only(top: 5.0),
                   child: Text(
-                    user.email,
+                    user.email.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 14.0),
                   ),
                 ),
@@ -89,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding:EdgeInsets.only(top:3.0),
+                  padding: EdgeInsets.only(top: 3.0),
                   child: Text(
                     user.bio,
                     style: TextStyle(color: Colors.white70, fontSize: 18.0),
@@ -131,22 +129,30 @@ class _ProfilePageState extends State<ProfilePage> {
 // *2 this for follow/UnFollowButton
   createButton() {
     // ignore: unrelated_type_equality_checks
-    bool ownProfile = currentOnlineUserId == widget.userProfileId;
+    bool ownProfile = currentOnlineUserId == widget.userProfileId.id.toString();
     if (ownProfile) {
       //*3this if it is my profile fpr edit
+      // performFunction: editUserProfile
       return createButtonTitleAndFunction(
-          title: 'EditProfile', performFunction: editUserProfile);
+        title: 'EditProfile',
+      );
     }
   }
 
+  // Function performFunction
 // *3this if it is my profile fpr edit
-  Container createButtonTitleAndFunction(
-      {String title, Function performFunction}) {
+  Container createButtonTitleAndFunction({
+    String title,
+  }) {
     return Container(
       child: Padding(
         padding: EdgeInsets.only(top: 3.0),
         child: FlatButton(
-          onPressed:  performFunction,
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditProfilePage(
+                      currentOnlineUserId: currentOnlineUserId))),
           child: Container(
             width: 180.0,
             height: 26.0,
@@ -166,13 +172,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
 // *3this if it is my profile fpr edit
-  editUserProfile() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                EditProfilePage(currentOnlineUserId: currentOnlineUserId)));
-  }
+//   editUserProfile() {
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) =>
+//                 EditProfilePage(currentOnlineUserId: currentOnlineUserId)));
+//   }
 
   @override
   Widget build(BuildContext context) {

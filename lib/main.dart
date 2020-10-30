@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   storygram.firestore = FirebaseFirestore.instance;
-  storygram.firebaseStorage = FirebaseStorage.instance;
+  storygram.firebaseStorage=FirebaseStorage.instance;
   storygram.sharedPreferences = await SharedPreferences.getInstance();
   runApp(MyApp());
 }
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.black,
         cardColor: Colors.white70,
       ),
-      home:HomePage(),
+      home: HomePage(),
     );
   }
 }

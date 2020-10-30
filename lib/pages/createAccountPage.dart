@@ -13,17 +13,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
   String userName;
 // this method for velvet userName if true or false
-  submitUsername(){
+  submitUsername() {
     final form = _formKey.currentState;
-    if (form.validate()){
+    if (form.validate()) {
       form.save();
-      SnackBar snackBar = SnackBar(content: Text('Welcome'+userName));
+      SnackBar snackBar = SnackBar(content: Text('Welcome' + userName));
       _scaffoldKey.currentState.showSnackBar(snackBar);
-      Timer(Duration(seconds: 4),(){
-        Navigator.pop(context,userName);
+      Timer(Duration(seconds: 4), () {
+        Navigator.pop(context, userName);
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +77,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   ),
                 ),
                 GestureDetector(
-                    onTap:submitUsername,
+                    onTap: submitUsername,
                     child: Container(
                       height: 55.0,
                       width: 360.0,
