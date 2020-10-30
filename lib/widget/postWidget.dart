@@ -149,13 +149,13 @@ class _PostState extends State<Post> {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          CachedNetworkImage(imageUrl: url),
+         Image.network(url),
         ],
       ),
     );
   }
 
-//this method for postPicture
+//this method for postPictureALL daiteles
   creatPostFooter() {
     return Column(
       children: [
@@ -166,11 +166,51 @@ class _PostState extends State<Post> {
               padding: EdgeInsets.only(top: 40.0, left: 20.0),
               child: GestureDetector(
                 onTap: () => print('post is liked'),
-                child: Icon(null),
+                child: Icon(Icons.favorite,color:Colors.pink,size: 28.0,)
+                // Icon(
+                //   isLiked ? Icons.favorite : Icons.favorite_border,
+                //   size: 28.0,
+                //   color: Colors.pink,
+                // ),
               ),
-            )
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () => print('ShowComment'),
+                child: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Colors.white,
+                  size: 28.0,
+                ),
+              ),
+            ),
           ],
-        )
+        ),
+        Row(
+          children: [
+            Container(
+                margin: EdgeInsets.only(left: 20.0),
+                child: Text('$likesCount likes',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)))
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+                margin: EdgeInsets.only(left: 20.0),
+                child: Text(
+                  '$username ',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                )),
+            Expanded(
+                child: Text('$description',
+                    style: TextStyle(color: Colors.white))),
+          ],
+        ),
       ],
     );
   }

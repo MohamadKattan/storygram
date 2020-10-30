@@ -21,8 +21,9 @@ const kphotoUrl='photoUrl';
 const kbio='bio';
 const kdisplayName='displayName';
 // this for storage and fireStore postes set
-const kPostsPictures='PostsPictures';
-const kPostFirebase='PostFirebase';
+const kPostsPicturescollection='PostsPictures';
+const kPostFirebasecollection='PostFirebase';
+const kuserPostscollection='userPosts';
 const kurl = 'url';
 const klocation ='location';
 const kdescription= 'description';

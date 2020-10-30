@@ -171,7 +171,7 @@ class _UpLoadPageState extends State<UpLoadPage> {
       {String url, String location, String description}) async {
     postsReference
         .doc(widget.gCurrentUser.id)
-        .collection(kPostFirebase)
+        .collection(kuserPostscollection)
         .doc(postId)
         .set({
       kpostID: postId,

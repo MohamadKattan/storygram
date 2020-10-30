@@ -1,10 +1,16 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:storygram/constent.dart';
 import 'package:storygram/models/User.dart';
 import 'package:storygram/pages/editProfilePage.dart';
 import 'package:storygram/pages/homePage.dart';
 import 'package:storygram/widget/headerWidget.dart';
+import 'package:storygram/widget/postTileWidget.dart';
+import 'package:storygram/widget/postWidget.dart';
 import 'package:storygram/widget/progressWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -18,6 +24,19 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // this for if Profile post is true or not
+  bool loading = false;
+  //for cunt Number posts
+  int countPost = 0;
+  //this list for postes that came from fireStore PostCollection
+  List<Post> postList = [];
+  String postOraintion = 'grid';
+  // ignore: must_call_super
+  void initState() {
+    //for get data from fireStore PostCollection
+    getAllProfilePosts();
+  }
+
   // this for bool inside createButton
   final String currentOnlineUserId = currentUser?.id;
   // this method for view data profile
@@ -139,8 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  // Function performFunction
-// *3this if it is my profile fpr edit
+// *3 this if it is my profile for edit Info
   Container createButtonTitleAndFunction({
     String title,
   }) {
@@ -187,8 +205,110 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         children: [
           creatProfileTopView(),
+          Divider(),
+          createListAndGRIDPostOrintion(),
+          Divider(
+            height: 0.0,
+          ),
+          disPlayProfilePost(),
         ],
       ),
     );
+  }
+
+  disPlayProfilePost() {
+    if (loading) {
+      return circularProgres();
+    } else if (postList.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+                padding: EdgeInsets.all(30.0),
+                child: Icon(
+                  Icons.photo_library,
+                  size: 200,
+                  color: Colors.grey,
+                )),
+            Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  'No POST YET',
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold),
+                ))
+          ],
+        ),
+      );
+    } else if (postOraintion == 'grid') {
+      List<GridTile> gridTileList = [];
+      postList.forEach((eachPost) {
+        gridTileList.add(GridTile(child: PostTile(eachPost)));
+      });
+      return GridView.count(
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        childAspectRatio: 1.0,
+        mainAxisSpacing: 1.5,
+        crossAxisSpacing: 1.5,
+        physics: NeverScrollableScrollPhysics(),
+        children: gridTileList,
+      );
+    } else if (postOraintion == 'list') {
+      return Column(
+        children: postList,
+      );
+    }
+  }
+
+//this method for get from fireStor postCollection
+  getAllProfilePosts() async {
+    setState(() {
+      loading = true;
+    });
+    QuerySnapshot querySnapshot = await postsReference
+        .doc(widget.userProfileId.id)
+        .collection(kuserPostscollection)
+        .orderBy(ktime, descending: true)
+        .get();
+    setState(() {
+      loading = false;
+      countPost = querySnapshot.docs.length;
+      postList = querySnapshot.docs
+          .map((documentSnapShot) => Post.fromDocument(documentSnapShot))
+          .toList();
+    });
+  }
+
+  createListAndGRIDPostOrintion() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          onPressed: () => setOraintion('grid'),
+          icon: Icon(Icons.grid_on),
+          color: postOraintion == 'grid'
+              ? Theme.of(context).primaryColor
+              : Colors.grey,
+        ),
+        IconButton(
+          onPressed: () => setOraintion('list'),
+          icon: Icon(Icons.grid_on),
+          color: postOraintion == 'grid'
+              ? Theme.of(context).primaryColor
+              : Colors.grey,
+        ),
+      ],
+    );
+  }
+
+  // this method for swithch bettwen view Way by grid or list
+  setOraintion(String oraintion) {
+    setState(() {
+      this.postOraintion = oraintion;
+    });
   }
 }

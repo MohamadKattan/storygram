@@ -16,8 +16,8 @@ import 'package:storygram/pages/upLoadPage.dart';
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersReference = FirebaseFirestore.instance.collection(kAuthCollection);
 final StorageReference storageReference =
-    FirebaseStorage.instance.ref().child(kPostsPictures);
-final postsReference = FirebaseFirestore.instance.collection(kPostFirebase);
+    FirebaseStorage.instance.ref().child(kPostsPicturescollection);
+final postsReference = FirebaseFirestore.instance.collection(kPostFirebasecollection);
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
