@@ -29,5 +29,5 @@ const klocation ='location';
 const kdescription= 'description';
 const kpostID = 'postID ';
 const kownerID = 'ownerID';
-const ktime = 'time';
+const ktime ='timestamp';
 const klikes = 'likes';

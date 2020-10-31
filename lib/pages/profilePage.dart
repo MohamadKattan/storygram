@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // this method for view data profile
   creatProfileTopView() {
     return FutureBuilder(
-      future: usersReference.doc(widget.userProfileId.id.toString()).get(),
+      future: usersReference.doc(widget.userProfileId.id).get(),
       builder: (context, dataSnapShot) {
         if (!dataSnapShot.hasData) {
           return circularProgres();
@@ -146,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
 // *2 this for follow/UnFollowButton
   createButton() {
     // ignore: unrelated_type_equality_checks
-    bool ownProfile = currentOnlineUserId == widget.userProfileId.id.toString();
+    bool ownProfile = currentOnlineUserId == widget.userProfileId.id;
     if (ownProfile) {
       //*3this if it is my profile fpr edit
       // performFunction: editUserProfile
@@ -187,14 +187,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-// *3this if it is my profile fpr edit
-//   editUserProfile() {
-//     Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//             builder: (context) =>
-//                 EditProfilePage(currentOnlineUserId: currentOnlineUserId)));
-//   }
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
     QuerySnapshot querySnapshot = await postsReference
         .doc(widget.userProfileId.id)
         .collection(kuserPostscollection)
-        .orderBy(ktime, descending: true)
+        .orderBy('timestamp', descending: true)
         .get();
     setState(() {
       loading = false;

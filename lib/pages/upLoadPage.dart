@@ -174,14 +174,14 @@ class _UpLoadPageState extends State<UpLoadPage> {
         .collection(kuserPostscollection)
         .doc(postId)
         .set({
-      kpostID: postId,
-      kownerID: widget.gCurrentUser.id,
-      ktime: timestamp,
-      kUsername: widget.gCurrentUser.username,
-      klikes: {},
-      kdescription: description,
-      klocation: location,
-      kurl: url,
+      'postID': postId,
+      'ownerID': widget.gCurrentUser.id,
+      'timestamp': timestamp,
+     'username': widget.gCurrentUser.username,
+      'likes': {},
+      'description': description,
+      'location': location,
+      'url': url,
     });
   }
 
