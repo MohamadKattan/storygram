@@ -24,15 +24,15 @@ class Post extends StatefulWidget {
       this.description,
       this.url,
       this.location});
-  factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
+  factory Post.fromDocument(DocumentSnapshot docsSnapShot) {
     return Post(
-      postID: documentSnapshot['postID'],
-      ownerID: documentSnapshot['ownerID'],
-      location: documentSnapshot['location'],
-      likes: documentSnapshot[' likes'],
-      url: documentSnapshot[' url'],
-      username: documentSnapshot[' username'],
-      description: documentSnapshot[' description'],
+      postID: docsSnapShot['postID'],
+      ownerID: docsSnapShot['ownerID'],
+      location: docsSnapShot['location'],
+      likes: docsSnapShot['likes'],
+      url: docsSnapShot['url'],
+      username: docsSnapShot['username'],
+      description: docsSnapShot['description'],
     );
   }
 
@@ -149,7 +149,7 @@ class _PostState extends State<Post> {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-         Image.network(url),
+          Image.network(url),
         ],
       ),
     );
@@ -165,14 +165,18 @@ class _PostState extends State<Post> {
             Padding(
               padding: EdgeInsets.only(top: 40.0, left: 20.0),
               child: GestureDetector(
-                onTap: () => print('post is liked'),
-                child: Icon(Icons.favorite,color:Colors.pink,size: 28.0,)
-                // Icon(
-                //   isLiked ? Icons.favorite : Icons.favorite_border,
-                //   size: 28.0,
-                //   color: Colors.pink,
-                // ),
-              ),
+                  onTap: () => print('post is liked'),
+                  child: Icon(
+                    Icons.favorite,
+                    color: Colors.pink,
+                    size: 28.0,
+                  )
+                  // Icon(
+                  //   isLiked ? Icons.favorite : Icons.favorite_border,
+                  //   size: 28.0,
+                  //   color: Colors.pink,
+                  // ),
+                  ),
             ),
             Padding(
               padding: EdgeInsets.only(right: 20.0),

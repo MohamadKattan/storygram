@@ -150,7 +150,7 @@ class _UpLoadPageState extends State<UpLoadPage> {
     final path = tempDir.path;
     Imd.Image mImageFile = Imd.decodeImage(file.readAsBytesSync());
     final compressingImageFile = File('$path/img_$postId.jpg')
-      ..writeAsBytesSync(Imd.encodeJpg(mImageFile, quality: 90));
+      ..writeAsBytesSync(Imd.encodeJpg(mImageFile, quality: 60));
     setState(() {
       file = compressingImageFile;
     });
