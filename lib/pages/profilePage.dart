@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int countPost = 0;
   //this list for postes that came from fireStore PostCollection
   List<Post> postList = [];
+  //for switch view way to listView or gridview
   String postOraintion = 'grid';
   // ignore: must_call_super
   void initState() {
@@ -37,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // this for bool inside createButton
   final String currentOnlineUserId = currentUser?.id;
-  // this method for view data profile
+  // this method for view data UserProfile from the up page
   creatProfileTopView() {
     return FutureBuilder(
       future: usersReference.doc(widget.userProfileId.id).get(),
@@ -149,7 +150,6 @@ class _ProfilePageState extends State<ProfilePage> {
     bool ownProfile = currentOnlineUserId == widget.userProfileId.id;
     if (ownProfile) {
       //*3this if it is my profile fpr edit
-      // performFunction: editUserProfile
       return createButtonTitleAndFunction(
         title: 'EditProfile',
       );
@@ -157,9 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
 // *3 this if it is my profile for edit Info
-  Container createButtonTitleAndFunction({
-    String title,
-  }) {
+  Container createButtonTitleAndFunction({String title,}) {
     return Container(
       child: Padding(
         padding: EdgeInsets.only(top: 3.0),
@@ -187,7 +185,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
+//this method if userProfile page found his posts or no post
   disPlayProfilePost() {
     if (loading) {
       return circularProgres();
@@ -272,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .toList();
     });
   }
-
+//this for view list or grid
   createListAndGRIDPostOrintion() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -286,7 +283,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         IconButton(
           onPressed: () => setOraintion('list'),
-          icon: Icon(Icons.grid_on),
+          icon: Icon(Icons.list),
           color: postOraintion == 'grid'
               ? Theme.of(context).primaryColor
               : Colors.grey,

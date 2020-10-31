@@ -1,14 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:storygram/constent.dart';
 import 'package:storygram/models/User.dart';
 import 'package:storygram/pages/homePage.dart';
 import 'package:storygram/widget/progressWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class Post extends StatefulWidget {
-  //this data implamnt from UPload page for read data post
+  //this data implement from Upload page for read data post
   final String postID;
   final String ownerID;
   final dynamic likes;
@@ -17,7 +20,13 @@ class Post extends StatefulWidget {
   final String url;
   final String location;
   Post(
-      {this.postID,this.ownerID,this.username,this.likes,this.description,this.url,this.location});
+      {this.postID,
+      this.ownerID,
+      this.username,
+      this.likes,
+      this.description,
+      this.url,
+      this.location});
   factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
     return Post(
       postID: documentSnapshot['postID'],
@@ -82,6 +91,7 @@ class _PostState extends State<Post> {
       this.likesCount});
   @override
   Widget build(BuildContext context) {
+    isLiked=(likes[currentOnlineUserId]==true);
     return Padding(
       padding: EdgeInsets.only(bottom: 12.0),
       child: Column(
@@ -139,14 +149,86 @@ class _PostState extends State<Post> {
   // this method for catch picture
   creatPostPicture() {
     return GestureDetector(
-      onDoubleTap: () => print('it is liked'),
+     onDoubleTap: () => controlUserLikePost(),
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-         Image.network(url),
+          Image.network(url),
+          showHeart?Icon(Icons.favorite,size: 140,color: Colors.pink,):Text(''),
+
+
         ],
       ),
     );
+  }
+
+  //this method for like or dilike
+  controlUserLikePost() {
+    bool _liked = likes[currentOnlineUserId] == true;
+    if (_liked) {
+      postsReference
+          .doc(ownerID)
+          .collection(kuserPostscollection)
+          .doc(postID)
+          .update({'likes.$currentOnlineUserId': false});
+      removeLike();
+      setState(() {
+        likesCount = likesCount - 1;
+        isLiked = false;
+        likes[currentOnlineUserId] = false;
+      });
+    } else if (!_liked) {
+      postsReference
+          .doc(ownerID)
+          .collection(kuserPostscollection)
+          .doc(postID)
+          .update({'likes.$currentOnlineUserId': true});
+      addLike();
+      setState(() {
+        likesCount = likesCount + 1;
+        isLiked = true;
+        likes[currentOnlineUserId] = true;
+        showHeart=true;
+      });
+      Timer(Duration(milliseconds: 800),(){
+        setState(() {
+          showHeart=false;
+        });
+      });
+    }
+  }
+
+  //this method for dilike
+  removeLike() {
+    bool isNotPostOwnerId = currentOnlineUserId != ownerID;
+    if (isNotPostOwnerId) {
+      activityFeedReference
+          .doc(ownerID)
+          .collection(kFeedItemCollection)
+          .doc(postID)
+          .get()
+          .then((document) {
+        if (document.exists) {
+          document.reference.delete();
+        }
+      });
+    }
+  }
+
+  // this method for add like
+  addLike(){
+    bool isNotPostOwner = currentOnlineUserId !=ownerID;
+    if(isNotPostOwner){
+      activityFeedReference.doc(ownerID).collection(kFeedItemCollection).doc(postID).set({
+        'type':'like',
+        'username':currentUser.username,
+        'userId':currentUser.id,
+        'timesTamp':timestamp,
+        'url':url,
+        'postId':postID,
+        'userProfileImg':currentUser.photoUrl,
+      });
+    }
   }
 
 //this method for postPictureALL daiteles
@@ -159,14 +241,14 @@ class _PostState extends State<Post> {
             Padding(
               padding: EdgeInsets.only(top: 40.0, left: 20.0),
               child: GestureDetector(
-                onTap: () => print('post is liked'),
-                child: Icon(Icons.favorite,color:Colors.pink,size: 28.0,)
-                // Icon(
-                //   isLiked ? Icons.favorite : Icons.favorite_border,
-                //   size: 28.0,
-                //   color: Colors.pink,
-                // ),
-              ),
+                  onTap: () => controlUserLikePost(),
+                  child:
+                  Icon(
+                    isLiked ? Icons.favorite : Icons.favorite_border,
+                    size: 28.0,
+                    color: Colors.pink,
+                  ),
+                  ),
             ),
             Padding(
               padding: EdgeInsets.only(right: 20.0),
