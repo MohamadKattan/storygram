@@ -1,3 +1,5 @@
+//Not : this page for write comment AND SAVE ON FIRE BASE For all this data got from argment from *(postWidget)
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:storygram/constent.dart';
@@ -25,15 +27,19 @@ class _CommentPageState extends State<CommentPage> {
   TextEditingController commentEditingController = TextEditingController();
 
   //this method for save data comment in fire store
-  saveComment() {
+  Future<void> saveComment() async {
     // if my comment
-    commentsReference.doc(postID).collection(kCommentCollection).add({
-      'username': currentUser.username,
-      'userId': currentUser.id,
-      'url': currentUser.photoUrl,
-      'comment': commentEditingController,
-      'timestamp': DateTime.now(),
-    });
+    try {
+      await commentsReference.doc(postID).collection(kCommentCollection).add({
+        'username': currentUser.username,
+        'userId': currentUser.id,
+        'url': currentUser.photoUrl,
+        'comment': commentEditingController.text,
+        'timestamp': DateTime.now(),
+      });
+    } catch (error) {
+      print(error.toString());
+    }
     //this bool if it is not my post for another user write comment to me
     bool isNotPostOwnerId = postOwnerid != currentUser.id;
     if (isNotPostOwnerId) {
@@ -103,7 +109,7 @@ class _CommentPageState extends State<CommentPage> {
               onPressed: saveComment,
               borderSide: BorderSide.none,
               child: Text(
-                'Publish your comment',
+                'Publish',
                 style: TextStyle(
                     color: Colors.lightGreenAccent,
                     fontWeight: FontWeight.bold),
@@ -115,7 +121,7 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 }
-
+// this class continer will show us the comment with user info
 class Comment extends StatelessWidget {
   final String username;
   final String userId;
