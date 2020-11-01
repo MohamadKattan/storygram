@@ -25,6 +25,7 @@ const kPostsPicturescollection='PostsPictures';
 const kPostFirebasecollection='PostFirebase';
 const kuserPostscollection='userPosts';
 const kFeedCollection='feed';
+const kCommentCollection='comments';
 const kFeedItemCollection='feedItems';
 const kurl = 'url';
 const klocation ='location';

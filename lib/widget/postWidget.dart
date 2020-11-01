@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:storygram/constent.dart';
 import 'package:storygram/models/User.dart';
+import 'package:storygram/pages/commentPage.dart';
 import 'package:storygram/pages/homePage.dart';
 import 'package:storygram/widget/progressWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -161,7 +162,7 @@ class _PostState extends State<Post> {
       ),
     );
   }
-
+//******************************backend
   //this method for like or dilike
   controlUserLikePost() {
     bool _liked = likes[currentOnlineUserId] == true;
@@ -230,8 +231,18 @@ class _PostState extends State<Post> {
       });
     }
   }
+//*****************************
+// this method for display comment
+  disPlayComment(BuildContext context,{String postID,String ownerID,String url }){
+    Navigator.push(context, MaterialPageRoute(builder:(context){
+      //argment to Comment Page
+      return CommentPage(
+        postID:postID,postOwnerid:ownerID,postImageUrl:url
+      );
+    }));
+  }
 
-//this method for postPictureALL daiteles
+//this method for postPictureALL daiteles (clicik favort ,coment,userName,discrpstion)in the downefrom page front
   creatPostFooter() {
     return Column(
       children: [
@@ -251,9 +262,9 @@ class _PostState extends State<Post> {
                   ),
             ),
             Padding(
-              padding: EdgeInsets.only(right: 20.0),
+              padding: EdgeInsets.only(right: 20.0,top:40.0),
               child: GestureDetector(
-                onTap: () => print('ShowComment'),
+                onTap: () => disPlayComment(context,postID:postID,ownerID:ownerID,url:url),
                 child: Icon(
                   Icons.chat_bubble_outline,
                   color: Colors.white,
