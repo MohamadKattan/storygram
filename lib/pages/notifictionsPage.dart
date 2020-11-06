@@ -100,7 +100,7 @@ class NotificationsItem extends StatelessWidget {
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-            onTap: () => disPlayUserProfile(context, userNotProfileId: userId),
+            onTap: () => disPlayUserProfile(context, userNotProfileId: userId+username),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(

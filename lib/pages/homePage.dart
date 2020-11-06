@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           UpLoadPage(gCurrentUser: currentUser),
           SearchPage(),
           //argment to profilrPage
-          ProfilePage(userProfileId: currentUser),
+          ProfilePage(userProfileId: currentUser,userNotProfileId: currentUser?.id,),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,
