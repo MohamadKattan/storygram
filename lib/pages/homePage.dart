@@ -20,6 +20,8 @@ final StorageReference storageReference =
 final postsReference = FirebaseFirestore.instance.collection(kPostFirebasecollection);
 final activityFeedReference = FirebaseFirestore.instance.collection(kFeedCollection);
 final commentsReference = FirebaseFirestore.instance.collection(kCommentCollection);
+final followersReference = FirebaseFirestore.instance.collection(kFollowersCollection);
+final followingReference = FirebaseFirestore.instance.collection(kFollowingCollection);
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -29,6 +31,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   // this to switch if signIN or Not
   bool isSingIn = false;
 

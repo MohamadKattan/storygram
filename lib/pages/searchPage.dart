@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:storygram/models/User.dart';
 import 'package:storygram/pages/homePage.dart';
+import 'package:storygram/pages/profilePage.dart';
 import 'package:storygram/widget/progressWidget.dart';
 
 class SearchPage extends StatefulWidget {
@@ -137,7 +138,7 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: <Widget>[
             GestureDetector(
-              onTap: () => print('done'),
+              onTap: () => disPlayUserProfile(context,userProfileId:eachUser),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.black,
@@ -168,5 +169,10 @@ class UserResult extends StatelessWidget {
         ),
       ),
     );
+  }
+  //this method for push argment another user id to profile page
+  disPlayUserProfile(BuildContext context,{User userProfileId}){
+ Navigator.push(context, MaterialPageRoute(builder:(context)=>ProfilePage(userProfileId:userProfileId) ));
+
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +16,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 class ProfilePage extends StatefulWidget {
   //argment from homepage for get dat from User
   final User userProfileId;
-  ProfilePage({this.userProfileId});
+  final String userNotProfileId;
+  ProfilePage({this.userProfileId,this.userNotProfileId});
+
+
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int countTotalFollowers = 0;
+  int countTotalFollowing = 0;
+  bool following = false;
   // this for if Profile post is true or not
   bool loading = false;
   //for cunt Number posts
@@ -34,6 +41,42 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     //for get data from fireStore PostCollection
     getAllProfilePosts();
+    getAllFollowers();
+    getAllFollowing();
+    cheackifAlreadyFollwing();
+  }
+
+// this method to know who is following you
+  cheackifAlreadyFollwing() async {
+    DocumentSnapshot documentSnapshot = await followersReference
+        .doc(widget.userProfileId.id)
+        .collection(kFollowersCollection)
+        .doc(currentOnlineUserId)
+        .get();
+    setState(() {
+      following = documentSnapshot.exists;
+    });
+  }
+
+  getAllFollowing() async {
+    QuerySnapshot querySnapshot = await followingReference
+        .doc(widget.userProfileId.id)
+        .collection(kFollowingCollection)
+        .get();
+        setState(() {
+          countTotalFollowing=querySnapshot.docs.length;
+        });
+  }
+
+  getAllFollowers() async
+  {
+    QuerySnapshot querySnapshot = await followersReference
+        .doc(widget.userProfileId.id)
+        .collection(kFollowersCollection)
+        .get();
+    setState(() {
+      countTotalFollowers=querySnapshot.docs.length;
+    });
   }
 
   // this for bool inside createButton
@@ -67,9 +110,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            createColumns('posts', 0),
-                            createColumns('followers', 0),
-                            createColumns('following', 0),
+                            createColumns('posts', countPost),
+                            createColumns('followers', countTotalFollowers),
+                            createColumns('following', countTotalFollowing),
                           ],
                         ),
                         Row(
@@ -152,21 +195,104 @@ class _ProfilePageState extends State<ProfilePage> {
       //*3this if it is my profile fpr edit
       return createButtonTitleAndFunction(
         title: 'EditProfile',
+        performFunction: editProfile,
+      );
+    } else if (following) {
+      //*3this if it is my profile fpr edit
+      return createButtonTitleAndFunction(
+        title: 'UnFollow',
+        performFunction: controlUnFollowUser,
+      );
+    } else if (!following) {
+      //*3this if it is my profile fpr edit
+      return createButtonTitleAndFunction(
+        title: 'Follow',
+        performFunction: controlFollowUser,
       );
     }
   }
 
+  editProfile() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                EditProfilePage(currentOnlineUserId: currentOnlineUserId)));
+  }
+
+  controlUnFollowUser() {
+    setState(() {
+      following = false;
+    });
+    followersReference
+        .doc(widget.userProfileId.id)
+        .collection(kFollowersCollection)
+        .doc(currentOnlineUserId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    followingReference
+        .doc(currentOnlineUserId)
+        .collection(kFollowingCollection)
+        .doc(widget.userProfileId.id)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    activityFeedReference
+        .doc(widget.userProfileId.id)
+        .collection(kFeedItemCollection)
+        .doc(currentOnlineUserId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+  }
+
+  controlFollowUser() {
+    setState(() {
+      following = true;
+    });
+    followersReference
+        .doc(widget.userProfileId.id)
+        .collection(kFollowersCollection)
+        .doc(currentOnlineUserId)
+        .set({});
+
+    followingReference
+        .doc(currentOnlineUserId)
+        .collection(kFollowingCollection)
+        .doc(widget.userProfileId.id)
+        .set({});
+    activityFeedReference
+        .doc(widget.userProfileId.id)
+        .collection(kFeedItemCollection)
+        .doc(currentOnlineUserId)
+        .set({
+      'type': 'follow',
+      'ownerId': widget.userProfileId.id,
+      'username': currentUser.username,
+      'timestamp': DateTime.now(),
+      'userProfileImg': currentUser.photoUrl,
+      'userId': currentOnlineUserId,
+    });
+  }
+
 // *3 this if it is my profile for edit Info
-  Container createButtonTitleAndFunction({String title,}) {
+  Container createButtonTitleAndFunction(
+      {String title, Function performFunction}) {
     return Container(
       child: Padding(
         padding: EdgeInsets.only(top: 3.0),
-        child: FlatButton(
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => EditProfilePage(
-                      currentOnlineUserId: currentOnlineUserId))),
+        child: GestureDetector(
+          onTap: performFunction,
           child: Container(
             width: 180.0,
             height: 26.0,
@@ -202,6 +328,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
 //this method if userProfile page found his posts or no post
   disPlayProfilePost() {
     if (loading) {
@@ -269,6 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .toList();
     });
   }
+
 //this for view list or grid
   createListAndGRIDPostOrintion() {
     return Row(

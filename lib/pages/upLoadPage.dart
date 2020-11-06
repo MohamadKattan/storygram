@@ -176,7 +176,7 @@ class _UpLoadPageState extends State<UpLoadPage> {
         .set({
       'postID': postId,
       'ownerID': widget.gCurrentUser.id,
-      'timestamp': timestamp,
+      'timestamp': DateTime.now(),
      'username': widget.gCurrentUser.username,
       'likes': {},
       'description': description,

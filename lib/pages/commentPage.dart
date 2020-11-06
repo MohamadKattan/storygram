@@ -48,12 +48,13 @@ class _CommentPageState extends State<CommentPage> {
           .collection(kFeedItemCollection)
           .add({
         'type': 'comment',
-        'commentData': timestamp,
+        'commentData':  commentEditingController.text,
         'postID': postID,
         'userId': currentUser.id,
         'userProfileUrl': currentUser.photoUrl,
         'username': currentUser.username,
         'url': postImageUrl,
+        'timestamp':timestamp
       });
     }
     commentEditingController.clear();

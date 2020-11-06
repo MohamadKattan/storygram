@@ -7,6 +7,7 @@ import 'package:storygram/constent.dart';
 import 'package:storygram/models/User.dart';
 import 'package:storygram/pages/commentPage.dart';
 import 'package:storygram/pages/homePage.dart';
+import 'package:storygram/pages/profilePage.dart';
 import 'package:storygram/widget/progressWidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -122,7 +123,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-              onTap: () => print('go go '),
+              onTap: () => disPlayUserProfile(context,userNotProfileId: user.id),
               child: Text(
                 user.username,
                 style:
@@ -223,7 +224,7 @@ class _PostState extends State<Post> {
         'type':'like',
         'username':currentUser.username,
         'userId':currentUser.id,
-        'timesTamp':timestamp,
+        'timesTamp':DateTime.now(),
         'url':url,
         'postId':postID,
         'userProfileImg':currentUser.photoUrl,
@@ -299,5 +300,15 @@ class _PostState extends State<Post> {
         ),
       ],
     );
+  }
+
+  //this method for push argment another user id to profile page
+  disPlayUserProfile(BuildContext context, {String userNotProfileId}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProfilePage(
+              userNotProfileId: userNotProfileId,
+            )));
   }
 }
