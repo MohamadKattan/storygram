@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:storygram/constent.dart';
-import 'package:storygram/models/User.dart';
 import 'package:storygram/pages/homePage.dart';
 import 'package:storygram/pages/postScreenPage.dart';
 import 'package:storygram/pages/profilePage.dart';
@@ -24,10 +23,8 @@ class _NotifictionPageState extends State<NotificationsPage> {
       body: Container(
         child: FutureBuilder(
           future: retrivedNotifictions(),
-          builder: (context,dataSnapShot)
-          {
-            if(!dataSnapShot.hasData)
-            {
+          builder: (context, dataSnapShot) {
+            if (!dataSnapShot.hasData) {
               return circularProgres();
             }
             return ListView(children: dataSnapShot.data);
@@ -46,11 +43,11 @@ class _NotifictionPageState extends State<NotificationsPage> {
         .limit(60)
         .get();
 
-    List<NotificationsItem> notificationsItem = [];
+    List<NotificationsItem> notificationsItems = [];
     querySnapshot.docs.forEach((document) {
-      notificationsItem.add(NotificationsItem.fromDocument(document));
+      notificationsItems.add(NotificationsItem.fromDocument(document));
     });
-    return notificationsItem;
+    return notificationsItems;
   }
 }
 
@@ -64,20 +61,19 @@ class NotificationsItem extends StatelessWidget {
   final String commentData;
   final String postID;
   final String userId;
-  final String userProfileImg;
+  final String userProfileUrl;
   final String url;
   final Timestamp timestamp;
-  final User eachUser;
-  NotificationsItem(
-      {this.username,
-      this.type,
-      this.commentData,
-      this.postID,
-      this.userId,
-      this.userProfileImg,
-      this.url,
-      this.timestamp,
-      this.eachUser});
+  NotificationsItem({
+    this.username,
+    this.type,
+    this.commentData,
+    this.postID,
+    this.userId,
+    this.userProfileUrl,
+    this.url,
+    this.timestamp,
+  });
   factory NotificationsItem.fromDocument(DocumentSnapshot documentSnapshot) {
     return NotificationsItem(
       username: documentSnapshot['username'],
@@ -85,7 +81,7 @@ class NotificationsItem extends StatelessWidget {
       commentData: documentSnapshot['commentData'],
       postID: documentSnapshot['postID'],
       userId: documentSnapshot['userId'],
-      userProfileImg: documentSnapshot['userProfileImg'],
+      userProfileUrl: documentSnapshot['userProfileUrl'],
       url: documentSnapshot['url'],
       timestamp: documentSnapshot['timestamp'],
     );
@@ -100,7 +96,7 @@ class NotificationsItem extends StatelessWidget {
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-            onTap: () => disPlayUserProfile(context, userNotProfileId: userId+username),
+            onTap: () => disPlayUserProfile(context, userProfileId:userId),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
@@ -110,13 +106,13 @@ class NotificationsItem extends StatelessWidget {
                       text: username,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   //this for topic the message notfication
-                  TextSpan(text: '$notificationsItemText'),
+                  TextSpan(text: ' $notificationsItemText'),
                 ],
               ),
             ),
           ),
           leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
+            backgroundImage: CachedNetworkImageProvider(userProfileUrl),
           ),
           subtitle: Text(
             tago.format(timestamp.toDate()),
@@ -132,12 +128,12 @@ class NotificationsItem extends StatelessWidget {
   ConfigerMediaPreVuew(context) {
     if (type == 'comment' || type == 'like') {
       mediaPreView = GestureDetector(
-        onTap:()=> disPlayFullPost(context),
+        onTap: () => disPlayFullPost(context),
         child: Container(
           height: 50.0,
           width: 50.0,
           child: AspectRatio(
-            aspectRatio: 16 / 9,
+            aspectRatio: 16/9,
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
@@ -147,31 +143,23 @@ class NotificationsItem extends StatelessWidget {
           ),
         ),
       );
-    }
-    else
+    } else
       {
-        mediaPreView = Text('');
-      }
-     if(type=='like')
-      {
-        notificationsItemText='liked your post';
-      }
-     else if(type=='comment')
-    {
-      notificationsItemText='replied:$commentData';
+      mediaPreView = Text('');
     }
-     else if(type=='follow')
-    {
-      notificationsItemText='Started following you';
-    }
-  else
-    {
-      notificationsItemText='Error.uknowen type=$type';
+    if (type == 'like') {
+      notificationsItemText = 'liked your post';
+    } else if (type == 'comment') {
+      notificationsItemText = 'replied:$commentData';
+    } else if (type == 'follow') {
+      notificationsItemText = 'Started following you';
+    } else {
+      notificationsItemText = 'Error.unknown type=$type';
     }
   }
 
   //this method tp puch post to screen post if like or comment
-  disPlayFullPost(context) {
+  disPlayFullPost(BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -182,13 +170,14 @@ class NotificationsItem extends StatelessWidget {
   }
 
   //this method for push argment another user id to profile page
-  disPlayUserProfile(BuildContext context, {String userNotProfileId}) {
+  disPlayUserProfile(BuildContext context, {String userProfileId}) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ProfilePage(
-                  userNotProfileId: userNotProfileId,
+                  userProfileId: userProfileId,
                 )));
   }
+
 
 }

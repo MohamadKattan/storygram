@@ -15,9 +15,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfilePage extends StatefulWidget {
   //argment from homepage for get dat from User
-  final User userProfileId;
-  final String userNotProfileId;
-  ProfilePage({this.userProfileId,this.userNotProfileId});
+  final String userProfileId;
+  ProfilePage({this.userProfileId});
 
 
 
@@ -49,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
 // this method to know who is following you
   cheackifAlreadyFollwing() async {
     DocumentSnapshot documentSnapshot = await followersReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFollowersCollection)
         .doc(currentOnlineUserId)
         .get();
@@ -60,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   getAllFollowing() async {
     QuerySnapshot querySnapshot = await followingReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFollowingCollection)
         .get();
         setState(() {
@@ -71,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
   getAllFollowers() async
   {
     QuerySnapshot querySnapshot = await followersReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFollowersCollection)
         .get();
     setState(() {
@@ -84,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // this method for view data UserProfile from the up page
   creatProfileTopView() {
     return FutureBuilder(
-      future: usersReference.doc(widget.userProfileId.id).get(),
+      future: usersReference.doc(widget.userProfileId).get(),
       builder: (context, dataSnapShot) {
         if (!dataSnapShot.hasData) {
           return circularProgres();
@@ -190,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
 // *2 this for follow/UnFollowButton
   createButton() {
     // ignore: unrelated_type_equality_checks
-    bool ownProfile = currentOnlineUserId == widget.userProfileId.id;
+    bool ownProfile = currentOnlineUserId == widget.userProfileId;
     if (ownProfile) {
       //*3this if it is my profile fpr edit
       return createButtonTitleAndFunction(
@@ -225,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
       following = false;
     });
     followersReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFollowersCollection)
         .doc(currentOnlineUserId)
         .get()
@@ -237,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
     followingReference
         .doc(currentOnlineUserId)
         .collection(kFollowingCollection)
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .get()
         .then((document) {
       if (document.exists) {
@@ -245,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     });
     activityFeedReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFeedItemCollection)
         .doc(currentOnlineUserId)
         .get()
@@ -261,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
       following = true;
     });
     followersReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFollowersCollection)
         .doc(currentOnlineUserId)
         .set({});
@@ -269,15 +268,15 @@ class _ProfilePageState extends State<ProfilePage> {
     followingReference
         .doc(currentOnlineUserId)
         .collection(kFollowingCollection)
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .set({});
     activityFeedReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kFeedItemCollection)
         .doc(currentOnlineUserId)
         .set({
       'type': 'follow',
-      'ownerId': widget.userProfileId.id,
+      'ownerId': widget.userProfileId,
       'username': currentUser.username,
       'timestamp': DateTime.now(),
       'userProfileImg': currentUser.photoUrl,
@@ -384,7 +383,7 @@ class _ProfilePageState extends State<ProfilePage> {
       loading = true;
     });
     QuerySnapshot querySnapshot = await postsReference
-        .doc(widget.userProfileId.id)
+        .doc(widget.userProfileId)
         .collection(kuserPostscollection)
         .orderBy('timestamp', descending: true)
         .get();

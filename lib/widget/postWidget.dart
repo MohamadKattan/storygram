@@ -123,7 +123,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-              onTap: () => disPlayUserProfile(context,userNotProfileId: user.id),
+              onTap: () => disPlayUserProfile(context,userProfileId: user.id),
               child: Text(
                 user.username,
                 style:
@@ -224,7 +224,7 @@ class _PostState extends State<Post> {
         'type':'like',
         'username':currentUser.username,
         'userId':currentUser.id,
-        'timesTamp':DateTime.now(),
+        'timestamp':DateTime.now(),
         'url':url,
         'postId':postID,
         'userProfileImg':currentUser.photoUrl,
@@ -303,12 +303,12 @@ class _PostState extends State<Post> {
   }
 
   //this method for push argment another user id to profile page
-  disPlayUserProfile(BuildContext context, {String userNotProfileId}) {
+  disPlayUserProfile(BuildContext context, {String userProfileId}) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ProfilePage(
-              userNotProfileId: userNotProfileId,
+              userProfileId: userProfileId,
             )));
   }
 }

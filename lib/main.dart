@@ -10,7 +10,8 @@ void main() async {
   //this widget for accec any method or any thing from main void
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  storygram.firestore = FirebaseFirestore.instance;
+   FirebaseFirestore.instance.settings;
+   storygram.firestore = FirebaseFirestore.instance;
   storygram.firebaseStorage=FirebaseStorage.instance;
   storygram.sharedPreferences = await SharedPreferences.getInstance();
   runApp(MyApp());

@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,18 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersReference = FirebaseFirestore.instance.collection(kAuthCollection);
 final StorageReference storageReference =
     FirebaseStorage.instance.ref().child(kPostsPicturescollection);
-final postsReference = FirebaseFirestore.instance.collection(kPostFirebasecollection);
-final activityFeedReference = FirebaseFirestore.instance.collection(kFeedCollection);
-final commentsReference = FirebaseFirestore.instance.collection(kCommentCollection);
-final followersReference = FirebaseFirestore.instance.collection(kFollowersCollection);
-final followingReference = FirebaseFirestore.instance.collection(kFollowingCollection);
+final postsReference =
+    FirebaseFirestore.instance.collection(kPostFirebasecollection);
+final activityFeedReference =
+    FirebaseFirestore.instance.collection(kFeedCollection);
+final commentsReference =
+    FirebaseFirestore.instance.collection(kCommentCollection);
+final followersReference =
+    FirebaseFirestore.instance.collection(kFollowersCollection);
+final followingReference =
+    FirebaseFirestore.instance.collection(kFollowingCollection);
+final timelineReference =
+    FirebaseFirestore.instance.collection(kTimelineCollection);
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -31,6 +40,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final _scaffoldkey = GlobalKey<ScaffoldState>();
 
   // this to switch if signIN or Not
   bool isSingIn = false;
@@ -64,15 +75,16 @@ class _HomePageState extends State<HomePage> {
   //if user singinIn pushto homeScreen
   Scaffold buildHomeScreen() {
     return Scaffold(
+      key: _scaffoldkey,
       body: PageView(
         children: [
-          TimeLinePage(),
+          TimeLinePage(gCurrentUser: currentUser),
           NotificationsPage(),
           //argment to upload page
           UpLoadPage(gCurrentUser: currentUser),
           SearchPage(),
           //argment to profilrPage
-          ProfilePage(userProfileId: currentUser,userNotProfileId: currentUser?.id,),
+          ProfilePage(userProfileId: currentUser?.id),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,
@@ -169,15 +181,21 @@ class _HomePageState extends State<HomePage> {
 
   //this function for contr8ol if user Auth or not in FireAuth
   controlSignIn(GoogleSignInAccount signInAccount) async {
-    if (signInAccount != null) {
-      saveUserInfoToFireStore();
-      setState(() {
-        isSingIn = true;
-      });
-    } else {
-      setState(() {
-        isSingIn = false;
-      });
+    try {
+      if (signInAccount != null) {
+        saveUserInfoToFireStore();
+        setState(() {
+          isSingIn = true;
+        });
+        //for puch fuctions
+        configerRealTimePushNotifications();
+      } else {
+        setState(() {
+          isSingIn = false;
+        });
+      }
+    } catch (ex) {
+      print('googleError ' + ex.toString());
     }
   }
 
@@ -202,12 +220,55 @@ class _HomePageState extends State<HomePage> {
       });
       //download
       doc = await usersReference.doc(user.id).get();
+      //this function for get info UsersFollowers when start following another user
+      await followersReference
+          .doc(user.id)
+          .collection(kUserFollowingColl)
+          .doc(user.id)
+          .set({});
     }
     // this for downlaod data from fireSTORE
     currentUser = User.fromDocument(doc);
     print(currentUser);
     print(currentUser.username);
     print(currentUser.email);
+  }
+
+//this method for puch notifiaction
+  configerRealTimePushNotifications() {
+    final GoogleSignInAccount gUser = googleSignIn.currentUser;
+    //for switch if device ios
+    if (Platform.isIOS) {
+      getIOSPermissions();
+    }
+    //for switch if device  android
+    _firebaseMessaging.getToken().then((token) {
+      usersReference.doc(gUser.id).update({'androidNotificationToken': token});
+    });
+    _firebaseMessaging.configure(onMessage: (Map<String, dynamic> msg) async {
+      final String recipientId = msg['data']['recipient'];
+      final String body = msg['notification']['body'];
+      if (recipientId == gUser.id) {
+        SnackBar snackBar = SnackBar(
+          backgroundColor: Colors.grey,
+          content: Text(
+            body,
+            style: TextStyle(color: Colors.black),
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+        _scaffoldkey.currentState.showSnackBar(snackBar);
+      }
+    });
+  }
+
+  //this method for switch if ios device  for push Notifications
+  getIOSPermissions() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(alert: true, badge: true, sound: true));
+    _firebaseMessaging.onIosSettingsRegistered.listen((settings) {
+      print('SettingsRegistered:$settings');
+    });
   }
 
   @override

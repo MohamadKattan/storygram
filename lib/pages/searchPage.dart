@@ -138,7 +138,7 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: <Widget>[
             GestureDetector(
-              onTap: () => disPlayUserProfile(context,userProfileId:eachUser),
+              onTap: () => disPlayUserProfile(context,userProfileId:eachUser.id),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.black,
@@ -171,7 +171,7 @@ class UserResult extends StatelessWidget {
     );
   }
   //this method for push argment another user id to profile page
-  disPlayUserProfile(BuildContext context,{User userProfileId}){
+  disPlayUserProfile(BuildContext context,{String userProfileId}){
  Navigator.push(context, MaterialPageRoute(builder:(context)=>ProfilePage(userProfileId:userProfileId) ));
 
   }
