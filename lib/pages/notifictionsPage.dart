@@ -38,7 +38,7 @@ class _NotifictionPageState extends State<NotificationsPage> {
   retrivedNotifictions() async {
     QuerySnapshot querySnapshot = await activityFeedReference
         .doc(currentUser.id)
-        .collection(kFeedItemCollection)
+        .collection('feedItems')
         .orderBy('timestamp', descending: true)
         .limit(60)
         .get();
@@ -59,18 +59,18 @@ class NotificationsItem extends StatelessWidget {
   final String username;
   final String type;
   final String commentData;
-  final String postID;
+  final String postId;
   final String userId;
-  final String userProfileUrl;
+  final String userProfileImg;
   final String url;
   final Timestamp timestamp;
   NotificationsItem({
     this.username,
     this.type,
     this.commentData,
-    this.postID,
+    this.postId,
     this.userId,
-    this.userProfileUrl,
+    this.userProfileImg,
     this.url,
     this.timestamp,
   });
@@ -79,9 +79,9 @@ class NotificationsItem extends StatelessWidget {
       username: documentSnapshot['username'],
       type: documentSnapshot['type'],
       commentData: documentSnapshot['commentData'],
-      postID: documentSnapshot['postID'],
+      postId: documentSnapshot['postId'],
       userId: documentSnapshot['userId'],
-      userProfileUrl: documentSnapshot['userProfileUrl'],
+      userProfileImg: documentSnapshot['userProfileImg'],
       url: documentSnapshot['url'],
       timestamp: documentSnapshot['timestamp'],
     );
@@ -96,23 +96,37 @@ class NotificationsItem extends StatelessWidget {
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-            onTap: () => disPlayUserProfile(context, userProfileId:userId),
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                style: TextStyle(fontSize: 14.0, color: Colors.black),
-                children: [
-                  TextSpan(
-                      text: username,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  //this for topic the message notfication
-                  TextSpan(text: ' $notificationsItemText'),
-                ],
+              onTap: () => disPlayUserProfile(context, userProfileId: userId),
+              child:
+              // Column(
+              //   children: [
+              //     Text(
+              //       username,
+              //       style: TextStyle(
+              //           fontSize: 14.0,
+              //           color: Colors.black,
+              //           fontWeight: FontWeight.bold),
+              //       overflow: TextOverflow.ellipsis,
+              //     ),
+              //     Text('$notificationsItemText'),
+              //   ],
+              // )
+              RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  style: TextStyle(fontSize: 14.0, color: Colors.black),
+                  children: [
+                    TextSpan(
+                        text: username,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    //this for topic the message notfication
+                    TextSpan(text: ' $notificationsItemText'),
+                  ],
+                ),
               ),
-            ),
-          ),
+              ),
           leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileUrl),
+            backgroundImage: CachedNetworkImageProvider(userProfileImg),
           ),
           subtitle: Text(
             tago.format(timestamp.toDate()),
@@ -133,7 +147,7 @@ class NotificationsItem extends StatelessWidget {
           height: 50.0,
           width: 50.0,
           child: AspectRatio(
-            aspectRatio: 16/9,
+            aspectRatio: 16 / 9,
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
@@ -143,8 +157,7 @@ class NotificationsItem extends StatelessWidget {
           ),
         ),
       );
-    } else
-      {
+    } else {
       mediaPreView = Text('');
     }
     if (type == 'like') {
@@ -164,7 +177,7 @@ class NotificationsItem extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) => PostScreenPage(
-                  postId: postID,
+                  postId: postId,
                   userId: userId,
                 )));
   }
@@ -178,6 +191,4 @@ class NotificationsItem extends StatelessWidget {
                   userProfileId: userProfileId,
                 )));
   }
-
-
 }

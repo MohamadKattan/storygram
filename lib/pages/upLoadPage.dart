@@ -24,7 +24,8 @@ class UpLoadPage extends StatefulWidget {
   _UpLoadPageState createState() => _UpLoadPageState();
 }
 
-class _UpLoadPageState extends State<UpLoadPage> {
+class _UpLoadPageState extends State<UpLoadPage>with AutomaticKeepAliveClientMixin<UpLoadPage>
+{
   File file;
 
   // for botton share
@@ -37,7 +38,7 @@ class _UpLoadPageState extends State<UpLoadPage> {
   TextEditingController loctionTextEditingController = TextEditingController();
 
 // this method for pick image from gallery
-  PickImageFromGallery() async {
+  PickImageFromGallery() async  {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -314,6 +315,8 @@ class _UpLoadPageState extends State<UpLoadPage> {
       ),
     );
   }
+
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {

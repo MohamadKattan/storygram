@@ -91,7 +91,7 @@ exports.onCreateFollower = functions.firestore
       .firestore()
       .collection("timeline")
       .doc(followerId)
-      .collection(" ");
+      .collection("timelinePosts");
 
     const querySnapshot = await followedUserPostsRef.get();
 

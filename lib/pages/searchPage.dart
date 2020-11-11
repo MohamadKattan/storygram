@@ -12,7 +12,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage>
+class _SearchPageState extends State<SearchPage>with AutomaticKeepAliveClientMixin<SearchPage>
 // with AutomaticKeepAliveClientMixin<SearchPage>
 {
   TextEditingController searchtextEditingController = TextEditingController();
@@ -111,7 +111,7 @@ class _SearchPageState extends State<SearchPage>
     );
   }
 
-  // bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

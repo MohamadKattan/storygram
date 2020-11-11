@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
   cheackifAlreadyFollwing() async {
     DocumentSnapshot documentSnapshot = await followersReference
         .doc(widget.userProfileId)
-        .collection(kFollowersCollection)
+        .collection(kUsersFollowersColl)
         .doc(currentOnlineUserId)
         .get();
     setState(() {
@@ -60,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
   getAllFollowing() async {
     QuerySnapshot querySnapshot = await followingReference
         .doc(widget.userProfileId)
-        .collection(kFollowingCollection)
+        .collection(kUserFollowingColl)
         .get();
         setState(() {
           countTotalFollowing=querySnapshot.docs.length;
@@ -71,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
   {
     QuerySnapshot querySnapshot = await followersReference
         .doc(widget.userProfileId)
-        .collection(kFollowersCollection)
+        .collection(kUsersFollowersColl)
         .get();
     setState(() {
       countTotalFollowers=querySnapshot.docs.length;
@@ -225,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     followersReference
         .doc(widget.userProfileId)
-        .collection(kFollowersCollection)
+        .collection(kUsersFollowersColl)
         .doc(currentOnlineUserId)
         .get()
         .then((document) {
@@ -235,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     followingReference
         .doc(currentOnlineUserId)
-        .collection(kFollowingCollection)
+        .collection(kUserFollowingColl)
         .doc(widget.userProfileId)
         .get()
         .then((document) {
@@ -261,13 +261,13 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     followersReference
         .doc(widget.userProfileId)
-        .collection(kFollowersCollection)
+        .collection(kUsersFollowersColl)
         .doc(currentOnlineUserId)
         .set({});
 
     followingReference
         .doc(currentOnlineUserId)
-        .collection(kFollowingCollection)
+        .collection(kUserFollowingColl)
         .doc(widget.userProfileId)
         .set({});
     activityFeedReference

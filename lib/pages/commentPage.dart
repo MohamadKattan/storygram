@@ -49,9 +49,9 @@ class _CommentPageState extends State<CommentPage> {
           .add({
         'type': 'comment',
         'commentData':  commentEditingController.text,
-        'postID': postID,
+        'postId': postID,
         'userId': currentUser.id,
-        'userProfileUrl': currentUser.photoUrl,
+        'userProfileImg': currentUser.photoUrl,
         'username': currentUser.username,
         'url': postImageUrl,
         'timestamp':timestamp

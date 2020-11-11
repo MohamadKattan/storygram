@@ -22,7 +22,7 @@ final StorageReference storageReference =
 final postsReference =
     FirebaseFirestore.instance.collection(kPostFirebasecollection);
 final activityFeedReference =
-    FirebaseFirestore.instance.collection(kFeedCollection);
+    FirebaseFirestore.instance.collection('feed');
 final commentsReference =
     FirebaseFirestore.instance.collection(kCommentCollection);
 final followersReference =
