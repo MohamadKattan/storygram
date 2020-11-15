@@ -24,8 +24,8 @@ class UpLoadPage extends StatefulWidget {
   _UpLoadPageState createState() => _UpLoadPageState();
 }
 
-class _UpLoadPageState extends State<UpLoadPage>with AutomaticKeepAliveClientMixin<UpLoadPage>
-{
+class _UpLoadPageState extends State<UpLoadPage>
+    with AutomaticKeepAliveClientMixin<UpLoadPage> {
   File file;
 
   // for botton share
@@ -38,7 +38,7 @@ class _UpLoadPageState extends State<UpLoadPage>with AutomaticKeepAliveClientMix
   TextEditingController loctionTextEditingController = TextEditingController();
 
 // this method for pick image from gallery
-  PickImageFromGallery() async  {
+  PickImageFromGallery() async {
     Navigator.pop(context);
     File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -178,11 +178,22 @@ class _UpLoadPageState extends State<UpLoadPage>with AutomaticKeepAliveClientMix
       'postID': postId,
       'ownerID': widget.gCurrentUser.id,
       'timestamp': DateTime.now(),
-     'username': widget.gCurrentUser.username,
+      'username': widget.gCurrentUser.username,
       'likes': {},
       'description': description,
       'location': location,
       'url': url,
+    }).then((value) {
+      storygram.firestore.collection('timeline').add({
+        'postID': postId,
+        'ownerID': widget.gCurrentUser.id,
+        'timestamp': DateTime.now(),
+        'username': widget.gCurrentUser.username,
+        'likes': {},
+        'description': description,
+        'location': location,
+        'url': url,
+      });
     });
   }
 

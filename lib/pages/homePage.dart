@@ -17,8 +17,10 @@ import 'package:storygram/pages/upLoadPage.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersReference = FirebaseFirestore.instance.collection(kAuthCollection);
+
 final StorageReference storageReference =
     FirebaseStorage.instance.ref().child(kPostsPicturescollection);
+
 final postsReference =
     FirebaseFirestore.instance.collection(kPostFirebasecollection);
 final activityFeedReference =
@@ -30,7 +32,12 @@ final followersReference =
 final followingReference =
     FirebaseFirestore.instance.collection(kFollowingCollection);
 final timelineReference =
-    FirebaseFirestore.instance.collection(kTimelineCollection);
+    FirebaseFirestore.instance.collection('timelinePosts');
+final commentFeedReference =
+FirebaseFirestore.instance.collection('feedCommet');
+final commentACReference =
+FirebaseFirestore.instance.collection('feedCommetAc');
+
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -78,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       key: _scaffoldkey,
       body: PageView(
         children: [
-          TimeLinePage(gCurrentUser: currentUser),
+          TimeLinePage(),
           NotificationsPage(),
           //argment to upload page
           UpLoadPage(gCurrentUser: currentUser),

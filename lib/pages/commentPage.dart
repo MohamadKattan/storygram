@@ -10,6 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as tago;
 
 class CommentPage extends StatefulWidget {
+
+  //conect with argment from postWidget=  disPlayComment metod
   final String postID;
   final String postOwnerid;
   final String postImageUrl;
@@ -29,34 +31,34 @@ class _CommentPageState extends State<CommentPage> {
   //this method for save data comment in fire store
   Future<void> saveComment() async {
     // if my comment
+
+    await commentsReference.doc(postID).collection(kCommentCollection).add({
+      'username': currentUser.username,
+      'userId': currentUser.id,
+      'url': currentUser.photoUrl,
+      'comment': commentEditingController.text,
+      'timestamp': DateTime.now(),
+    });
     try {
-      await commentsReference.doc(postID).collection(kCommentCollection).add({
-        'username': currentUser.username,
-        'userId': currentUser.id,
-        'url': currentUser.photoUrl,
-        'comment': commentEditingController.text,
-        'timestamp': DateTime.now(),
-      });
-    } catch (error) {
-      print(error.toString());
+      bool isNotPostOwnerId = postOwnerid != currentUser.id;
+
+      if (isNotPostOwnerId) {
+        activityFeedReference.doc(postOwnerid).collection('feedItems').add({
+          'type': 'comment',
+          'commentData': commentEditingController.text,
+          'postId': postID,
+          'userId': currentUser.id,
+          'userProfileImg': currentUser.photoUrl,
+          'username': currentUser.username,
+          'url': postImageUrl,
+          'timestamp': timestamp,
+        });
+      }
+    } catch (exComment) {
+      print(exComment.toString());
     }
     //this bool if it is not my post for another user write comment to me
-    bool isNotPostOwnerId = postOwnerid != currentUser.id;
-    if (isNotPostOwnerId) {
-      activityFeedReference
-          .doc(postOwnerid)
-          .collection(kFeedItemCollection)
-          .add({
-        'type': 'comment',
-        'commentData':  commentEditingController.text,
-        'postId': postID,
-        'userId': currentUser.id,
-        'userProfileImg': currentUser.photoUrl,
-        'username': currentUser.username,
-        'url': postImageUrl,
-        'timestamp':timestamp
-      });
-    }
+
     commentEditingController.clear();
   }
 
@@ -122,6 +124,7 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 }
+
 // this class continer will show us the comment with user info
 class Comment extends StatelessWidget {
   final String username;
@@ -145,8 +148,9 @@ class Comment extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
-        color: Colors.white,
-        child: Column(
+        color: Colors.white54,
+        child:
+        Column(
           children: [
             ListTile(
               title: Text(

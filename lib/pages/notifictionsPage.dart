@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:storygram/constent.dart';
 import 'package:storygram/pages/homePage.dart';
 import 'package:storygram/pages/postScreenPage.dart';
 import 'package:storygram/pages/profilePage.dart';
@@ -36,23 +35,24 @@ class _NotifictionPageState extends State<NotificationsPage> {
 
 //this method for get data from fire base to this page
   retrivedNotifictions() async {
-    QuerySnapshot querySnapshot = await activityFeedReference
-        .doc(currentUser.id)
-        .collection('feedItems')
-        .orderBy('timestamp', descending: true)
-        .limit(60)
-        .get();
+    try {
+      QuerySnapshot querySnapshot = await activityFeedReference
+          .doc(currentUser.id)
+          .collection('feedItems')
+          .orderBy('timestamp', descending: true)
+          .limit(60)
+          .get();
 
-    List<NotificationsItem> notificationsItems = [];
-    querySnapshot.docs.forEach((document) {
-      notificationsItems.add(NotificationsItem.fromDocument(document));
-    });
-    return notificationsItems;
+      List<NotificationsItem> notificationsItems = [];
+      querySnapshot.docs.forEach((document) {
+        notificationsItems.add(NotificationsItem.fromDocument(document));
+      });
+      return notificationsItems;
+    } catch (exret) {
+      print(exret.toString());
+    }
   }
 }
-
-String notificationsItemText;
-Widget mediaPreView;
 
 class NotificationsItem extends StatelessWidget {
   //this class for Recive data from fireStore Collections and show in the list [notificationsItem]inside futuerbuldir
@@ -74,44 +74,39 @@ class NotificationsItem extends StatelessWidget {
     this.url,
     this.timestamp,
   });
-  factory NotificationsItem.fromDocument(DocumentSnapshot documentSnapshot) {
-    return NotificationsItem(
-      username: documentSnapshot['username'],
-      type: documentSnapshot['type'],
-      commentData: documentSnapshot['commentData'],
-      postId: documentSnapshot['postId'],
-      userId: documentSnapshot['userId'],
-      userProfileImg: documentSnapshot['userProfileImg'],
-      url: documentSnapshot['url'],
-      timestamp: documentSnapshot['timestamp'],
-    );
-  }
 
+  factory NotificationsItem.fromDocument(DocumentSnapshot documentSnapshot) {
+    try {
+      NotificationsItem(
+        username: documentSnapshot['username'],
+        type: documentSnapshot['type'],
+        commentData: documentSnapshot['commentData'],
+        postId: documentSnapshot['postId'],
+        userId: documentSnapshot['userId'],
+        userProfileImg: documentSnapshot['userProfileImg'],
+        url: documentSnapshot['url'],
+        timestamp: documentSnapshot['timestamp'],
+      );
+    } catch (ex2) {
+      print(ex2.toString());
+    }
+
+    return NotificationsItem();
+  }
+  String notificationsItemText;
+  Widget mediaPreView;
   @override
   Widget build(BuildContext context) {
-    ConfigerMediaPreVuew(context);
-    return Padding(
-      padding: EdgeInsets.only(bottom: 2.0),
-      child: Container(
-        color: Colors.white54,
-        child: ListTile(
-          title: GestureDetector(
+    ConfigerMediaPreView(context);
+    try {
+      return Padding(
+        padding: EdgeInsets.only(bottom: 2.0),
+        child: Container(
+          color: Colors.white54,
+          child: ListTile(
+            title: GestureDetector(
               onTap: () => disPlayUserProfile(context, userProfileId: userId),
-              child:
-              // Column(
-              //   children: [
-              //     Text(
-              //       username,
-              //       style: TextStyle(
-              //           fontSize: 14.0,
-              //           color: Colors.black,
-              //           fontWeight: FontWeight.bold),
-              //       overflow: TextOverflow.ellipsis,
-              //     ),
-              //     Text('$notificationsItemText'),
-              //   ],
-              // )
-              RichText(
+              child: RichText(
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(
                   style: TextStyle(fontSize: 14.0, color: Colors.black),
@@ -124,50 +119,58 @@ class NotificationsItem extends StatelessWidget {
                   ],
                 ),
               ),
-              ),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
-          ),
-          subtitle: Text(
-            tago.format(timestamp.toDate()),
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: mediaPreView,
-        ),
-      ),
-    );
-  }
-
-// the metod to switch if user follow or not when they push notfction
-  ConfigerMediaPreVuew(context) {
-    if (type == 'comment' || type == 'like') {
-      mediaPreView = GestureDetector(
-        onTap: () => disPlayFullPost(context),
-        child: Container(
-          height: 50.0,
-          width: 50.0,
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(url))),
             ),
+            leading: CircleAvatar(
+              backgroundColor: Colors.red,
+              // backgroundImage: CachedNetworkImageProvider(userProfileImg)
+            ),
+            // subtitle: Text(
+            //   tago.format(timestamp.toDate()),
+            //   overflow: TextOverflow.ellipsis,
+            // ),
+            trailing: mediaPreView,
           ),
         ),
       );
-    } else {
-      mediaPreView = Text('');
+    } catch (ex1) {
+      print(ex1.toString());
     }
-    if (type == 'like') {
-      notificationsItemText = 'liked your post';
-    } else if (type == 'comment') {
-      notificationsItemText = 'replied:$commentData';
-    } else if (type == 'follow') {
-      notificationsItemText = 'Started following you';
-    } else {
-      notificationsItemText = 'Error.unknown type=$type';
+  }
+
+// the metod to switch if user follow or not when they push notfction
+  ConfigerMediaPreView(context) {
+    try {
+      if (type == 'comment' || type == 'like') {
+        mediaPreView = GestureDetector(
+          onTap: () => disPlayFullPost(context),
+          child: Container(
+            height: 50.0,
+            width: 50.0,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(url))),
+              ),
+            ),
+          ),
+        );
+      } else {
+        mediaPreView = Text('');
+      }
+      if (type == 'like') {
+        notificationsItemText = 'liked your post';
+      } else if (type == 'comment') {
+        notificationsItemText = 'replied:$commentData';
+      } else if (type == 'follow') {
+        notificationsItemText = 'Started following you';
+      } else {
+        notificationsItemText = 'Error.unknown type=$type';
+      }
+    } catch (ex3) {
+      print(ex3.toString());
     }
   }
 

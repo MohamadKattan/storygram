@@ -92,7 +92,7 @@ class _PostState extends State<Post> {
       this.likesCount});
   @override
   Widget build(BuildContext context) {
-    isLiked=(likes[currentOnlineUserId]==true);
+    isLiked = (likes[currentOnlineUserId] == true);
     return Padding(
       padding: EdgeInsets.only(bottom: 12.0),
       child: Column(
@@ -123,7 +123,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-              onTap: () => disPlayUserProfile(context,userProfileId: user.id),
+              onTap: () => disPlayUserProfile(context, userProfileId: user.id),
               child: Text(
                 user.username,
                 style:
@@ -150,18 +150,24 @@ class _PostState extends State<Post> {
   // this method for catch picture
   creatPostPicture() {
     return GestureDetector(
-     onDoubleTap: () => controlUserLikePost(),
-      child: Stack(
+      onDoubleTap: () => controlUserLikePost(),
+      child:
+      Stack(
         alignment: Alignment.center,
         children: <Widget>[
           Image.network(url),
-          showHeart?Icon(Icons.favorite,size: 140,color: Colors.pink,):Text(''),
-
-
+          showHeart
+              ? Icon(
+                  Icons.favorite,
+                  size: 140,
+                  color: Colors.pink,
+                )
+              : Text(''),
         ],
       ),
     );
   }
+
 //******************************backend
   //this method for like or dilike
   controlUserLikePost() {
@@ -184,61 +190,75 @@ class _PostState extends State<Post> {
           .collection(kuserPostscollection)
           .doc(postID)
           .update({'likes.$currentOnlineUserId': true});
+
       addLike();
       setState(() {
         likesCount = likesCount + 1;
         isLiked = true;
         likes[currentOnlineUserId] = true;
-        showHeart=true;
+        showHeart = true;
       });
-      Timer(Duration(milliseconds: 800),(){
+      Timer(Duration(milliseconds: 800), () {
         setState(() {
-          showHeart=false;
+          showHeart = false;
         });
       });
     }
   }
 
-  //this method for dilike
+  //this method for dislike if not our post to feedItems
   removeLike() {
-    bool isNotPostOwnerId = currentOnlineUserId != ownerID;
-    if (isNotPostOwnerId) {
-      activityFeedReference
-          .doc(ownerID)
-          .collection(kFeedItemCollection)
-          .doc(postID)
-          .get()
-          .then((document) {
-        if (document.exists) {
-          document.reference.delete();
-        }
-      });
+    try {
+      bool isNotPostOwnerId = currentOnlineUserId != ownerID;
+      if (isNotPostOwnerId) {
+        activityFeedReference
+            .doc(ownerID)
+            .collection('feedItems')
+            .doc(postID)
+            .get()
+            .then((document) {
+          if (document.exists) {
+            document.reference.delete();
+          }
+        });
+      }
+    } catch (exremoveLike) {
+      print(exremoveLike);
     }
   }
 
-  // this method for add like
-  addLike(){
-    bool isNotPostOwner = currentOnlineUserId !=ownerID;
-    if(isNotPostOwner){
-      activityFeedReference.doc(ownerID).collection(kFeedItemCollection).doc(postID).set({
-        'type':'like',
-        'username':currentUser.username,
-        'userId':currentUser.id,
-        'timestamp':DateTime.now(),
-        'url':url,
-        'postId':postID,
-        'userProfileImg':currentUser.photoUrl,
-      });
+  // this method for add like if not our post to feedItems
+  addLike() {
+    try {
+      bool isNotPostOwner = currentOnlineUserId != ownerID;
+      if (isNotPostOwner) {
+        activityFeedReference
+            .doc(ownerID)
+            .collection('feedItems')
+            .doc(postID)
+            .set({
+          'type': 'like',
+          'username': currentUser.username,
+          'userId': currentUser.id,
+          'timestamp': DateTime.now(),
+          'url': url,
+          'postId': postID,
+          'userProfileImg': currentUser.photoUrl,
+        });
+      }
+    } catch (exaddLike) {
+      print(exaddLike.toString());
     }
   }
+
 //*****************************
 // this method for display comment
-  disPlayComment(BuildContext context,{String postID,String ownerID,String url }){
-    Navigator.push(context, MaterialPageRoute(builder:(context){
+  disPlayComment(BuildContext context,
+      {String postID, String ownerID, String url}) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       //argment to Comment Page
       return CommentPage(
-        postID:postID,postOwnerid:ownerID,postImageUrl:url
-      );
+          postID: postID, postOwnerid: ownerID, postImageUrl: url);
     }));
   }
 
@@ -252,19 +272,19 @@ class _PostState extends State<Post> {
             Padding(
               padding: EdgeInsets.only(top: 40.0, left: 20.0),
               child: GestureDetector(
-                  onTap: () => controlUserLikePost(),
-                  child:
-                  Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_border,
-                    size: 28.0,
-                    color: Colors.pink,
-                  ),
-                  ),
+                onTap: () => controlUserLikePost(),
+                child: Icon(
+                  isLiked ? Icons.favorite : Icons.favorite_border,
+                  size: 28.0,
+                  color: Colors.pink,
+                ),
+              ),
             ),
             Padding(
-              padding: EdgeInsets.only(right: 20.0,top:40.0),
+              padding: EdgeInsets.only(right: 20.0, top: 40.0),
               child: GestureDetector(
-                onTap: () => disPlayComment(context,postID:postID,ownerID:ownerID,url:url),
+                onTap: () => disPlayComment(context,
+                    postID: postID, ownerID: ownerID, url: url),
                 child: Icon(
                   Icons.chat_bubble_outline,
                   color: Colors.white,
@@ -308,7 +328,7 @@ class _PostState extends State<Post> {
         context,
         MaterialPageRoute(
             builder: (context) => ProfilePage(
-              userProfileId: userProfileId,
-            )));
+                  userProfileId: userProfileId,
+                )));
   }
 }

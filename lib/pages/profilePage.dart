@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +16,6 @@ class ProfilePage extends StatefulWidget {
   //argment from homepage for get dat from User
   final String userProfileId;
   ProfilePage({this.userProfileId});
-
-
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -62,19 +59,18 @@ class _ProfilePageState extends State<ProfilePage> {
         .doc(widget.userProfileId)
         .collection(kUserFollowingColl)
         .get();
-        setState(() {
-          countTotalFollowing=querySnapshot.docs.length;
-        });
+    setState(() {
+      countTotalFollowing = querySnapshot.docs.length;
+    });
   }
 
-  getAllFollowers() async
-  {
+  getAllFollowers() async {
     QuerySnapshot querySnapshot = await followersReference
         .doc(widget.userProfileId)
         .collection(kUsersFollowersColl)
         .get();
     setState(() {
-      countTotalFollowers=querySnapshot.docs.length;
+      countTotalFollowers = querySnapshot.docs.length;
     });
   }
 
@@ -243,16 +239,20 @@ class _ProfilePageState extends State<ProfilePage> {
         document.reference.delete();
       }
     });
-    activityFeedReference
-        .doc(widget.userProfileId)
-        .collection(kFeedItemCollection)
-        .doc(currentOnlineUserId)
-        .get()
-        .then((document) {
-      if (document.exists) {
-        document.reference.delete();
-      }
-    });
+    try {
+      activityFeedReference
+          .doc(widget.userProfileId)
+          .collection('feedItems')
+          .doc(currentOnlineUserId)
+          .get()
+          .then((document) {
+        if (document.exists) {
+          document.reference.delete();
+        }
+      });
+    } catch (exUnFollowUser) {
+      print(exUnFollowUser.toString());
+    }
   }
 
   controlFollowUser() {
@@ -270,18 +270,22 @@ class _ProfilePageState extends State<ProfilePage> {
         .collection(kUserFollowingColl)
         .doc(widget.userProfileId)
         .set({});
-    activityFeedReference
-        .doc(widget.userProfileId)
-        .collection(kFeedItemCollection)
-        .doc(currentOnlineUserId)
-        .set({
-      'type': 'follow',
-      'ownerId': widget.userProfileId,
-      'username': currentUser.username,
-      'timestamp': DateTime.now(),
-      'userProfileImg': currentUser.photoUrl,
-      'userId': currentOnlineUserId,
-    });
+    try {
+      activityFeedReference
+          .doc(widget.userProfileId)
+          .collection('feedItems')
+          .doc(currentOnlineUserId)
+          .set({
+        'type': 'follow',
+        'ownerId': widget.userProfileId,
+        'username': currentUser.username,
+        'timestamp': DateTime.now(),
+        'userProfileImg': currentUser.photoUrl,
+        'userId': currentOnlineUserId,
+      });
+    } catch (exFollowUser) {
+      print(exFollowUser.toString());
+    }
   }
 
 // *3 this if it is my profile for edit Info
