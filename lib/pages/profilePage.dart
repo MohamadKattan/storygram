@@ -332,7 +332,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-//this method if userProfile page found his posts or no post
+//this method if userProfile page found his posts or no post (empty)
   disPlayProfilePost() {
     if (loading) {
       return circularProgres();
@@ -400,7 +400,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-//this for view list or grid
+//this for button list or grid
   createListAndGRIDPostOrintion() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
