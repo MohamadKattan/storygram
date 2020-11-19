@@ -263,13 +263,25 @@ class _ProfilePageState extends State<ProfilePage> {
         .doc(widget.userProfileId)
         .collection(kUsersFollowersColl)
         .doc(currentOnlineUserId)
-        .set({});
+        .set({
+      'type': 'follow',
+      'ownerId': widget.userProfileId,
+      'username': currentUser.username,
+      'timestamp': DateTime.now(),
+      'userProfileImg': currentUser.photoUrl,
+      'userId': currentOnlineUserId,
+    });
 
     followingReference
         .doc(currentOnlineUserId)
         .collection(kUserFollowingColl)
         .doc(widget.userProfileId)
-        .set({});
+        .set({    'type': 'follow',
+      'ownerId': widget.userProfileId,
+      'username': currentUser.username,
+      'timestamp': DateTime.now(),
+      'userProfileImg': currentUser.photoUrl,
+      'userId': currentOnlineUserId,});
     try {
       activityFeedReference
           .doc(widget.userProfileId)

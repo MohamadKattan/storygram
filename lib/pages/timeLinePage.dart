@@ -12,6 +12,9 @@ import 'package:storygram/widget/headerWidget.dart';
 import 'package:storygram/widget/progressWidget.dart';
 
 class TimeLinePage extends StatefulWidget {
+  //argment from homepage for get dat from User
+  final String userProfileId;
+  TimeLinePage({this.userProfileId});
   @override
   _TimeLinePageState createState() => _TimeLinePageState();
 }
@@ -146,25 +149,22 @@ class _AllPostsState extends State<AllPosts> {
             width: MediaQuery.of(context).size.width,
             child: Center(
                 child: GestureDetector(
-                  onDoubleTap: () => controlUserLikePost(),
-                  child: Stack(
-                    children: [
-                      Image(
-              image: NetworkImage(widget.url),
-
-            ),
-                      Center(
-                        child: showHeart
-                            ? Icon(
+              onDoubleTap: () => controlUserLikePost(),
+              child: Stack(
+                children: [
+                  Image(
+                    image: NetworkImage(widget.url),
+                  ),
+                  showHeart
+                      ? Icon(
                           Icons.favorite,
                           size: 140,
                           color: Colors.pink,
                         )
-                            : Text(''),
-                      ),
-                    ],
-                  ),
-                )),
+                      : Text(''),
+                ],
+              ),
+            )),
           ),
           creatPostFooter(),
         ],
@@ -204,7 +204,9 @@ class _AllPostsState extends State<AllPosts> {
                     Icons.more_vert,
                     color: Colors.white,
                   ),
-                  onPressed: () => print('Delete'),
+                  onPressed: () async{
+                   await storygram.firestore.collection('timeline').doc().delete();
+                  },
                 )
               : Text(''),
         );
@@ -373,5 +375,85 @@ class _AllPostsState extends State<AllPosts> {
             builder: (context) => ProfilePage(
                   userProfileId: userProfileId,
                 )));
+  }
+
+//this method for prepare delete post
+  controlDeletePost(BuildContext mcontext) {
+    return showDialog(
+        context: mcontext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(
+              'What do you want to do ?',
+              style: TextStyle(color: Colors.white),
+            ),
+            children: [
+              SimpleDialogOption(
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  removeUserPost();
+                },
+              ),
+              SimpleDialogOption(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+//this for delete post from firebase and storage and comment collection
+  removeUserPost() async {
+    postsReference
+        .doc(ownerID)
+        .collection('userPosts')
+        .doc(postID)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    storageReference.child('post_$postID.jpg').delete();
+
+    QuerySnapshot querySnapshot = await activityFeedReference
+        .doc(ownerID)
+        .collection('feedItems')
+        .where('postID', isEqualTo: postID)
+        .get();
+    querySnapshot.docs.forEach((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+   await storygram.firestore
+        .collection('timeline')
+        .doc(ownerID + postID)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+    QuerySnapshot commentquerySnapshot = await commentsReference
+        .doc(ownerID)
+        .collection('comments')
+        .where('postID', isEqualTo: postID)
+        .get();
+    commentquerySnapshot.docs.forEach((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
   }
 }

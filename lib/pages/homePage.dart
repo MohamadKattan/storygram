@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       key: _scaffoldkey,
       body: PageView(
         children: [
-          TimeLinePage(),
+          TimeLinePage(userProfileId: currentUser?.id),
           NotificationsPage(),
           //argment to upload page
           UpLoadPage(gCurrentUser: currentUser),
