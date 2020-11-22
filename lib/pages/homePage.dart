@@ -31,12 +31,8 @@ final followersReference =
     FirebaseFirestore.instance.collection(kFollowersCollection);
 final followingReference =
     FirebaseFirestore.instance.collection(kFollowingCollection);
-final timelineReference =
-    FirebaseFirestore.instance.collection('timelinePosts');
-final commentFeedReference =
-FirebaseFirestore.instance.collection('feedCommet');
-final commentACReference =
-FirebaseFirestore.instance.collection('feedCommetAc');
+final ttimelineReference =
+    FirebaseFirestore.instance.collection('timeline');
 
 final DateTime timestamp = DateTime.now();
 User currentUser;

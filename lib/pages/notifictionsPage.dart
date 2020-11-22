@@ -37,8 +37,8 @@ class _NotifictionPageState extends State<NotificationsPage> {
         .doc(currentUser.id)
         .collection('feedItems')
         .orderBy('timestamp', descending: true)
-        .limit(60)
-        .getDocuments();
+        .limit(50)
+        .get();
 
     List<NotificationsItem> notificationsItems = [];
     querySnapshot.docs.forEach((document) {

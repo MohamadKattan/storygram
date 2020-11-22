@@ -376,11 +376,10 @@ class _PostState extends State<Post> {
         .then((document) {
       if (document.exists) {
         document.reference.delete();
-
       }
     });
-    await   storygram.firestore.collection('timeline').doc(postID).delete();
-    // storageReference.child('post_$postID.jpg').delete();
+
+    storageReference.child('post_$postID.jpg').delete();
 
     QuerySnapshot querySnapshot = await activityFeedReference
         .doc(ownerID)
@@ -392,15 +391,15 @@ class _PostState extends State<Post> {
         document.reference.delete();
       }
     });
-    // await storygram.firestore
-    //     .collection('timeline')
-    //     .doc(ownerID + postID)
-    //     .get()
-    //     .then((document) {
-    //   if (document.exists) {
-    //     document.reference.delete();
-    //   }
-    // });
+    await storygram.firestore
+        .collection('timeline')
+        .doc(ownerID + postID)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
     QuerySnapshot commentquerySnapshot = await commentsReference
         .doc(ownerID)
         .collection('comments')
@@ -409,6 +408,15 @@ class _PostState extends State<Post> {
     commentquerySnapshot.docs.forEach((document) {
       if (document.exists) {
         document.reference.delete();
+      }
+    });
+    await storygram.firestore
+        .collection('timeline')
+        .doc(ownerID)
+        .get()
+        .then((docs) {
+      if (docs.exists) {
+        docs.reference.delete();
       }
     });
   }

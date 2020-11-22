@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore:
+  cloud_firestore: any
   firebase_core:
   shared_preferences:
   image:

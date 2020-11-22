@@ -21,20 +21,20 @@ class TimeLinePage extends StatefulWidget {
 
 class _TimeLinePageState extends State<TimeLinePage>
     with AutomaticKeepAliveClientMixin<TimeLinePage> {
-  final String postID;
+  final String postId;
   final String postOwnerid;
   final String postImageUrl;
-  _TimeLinePageState({this.postID, this.postImageUrl, this.postOwnerid});
+  _TimeLinePageState({this.postId, this.postImageUrl, this.postOwnerid});
   bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: header(context, isAppTitle: true),
-      body: (StreamBuilder<QuerySnapshot>(
-        stream: storygram.firestore
+      body: FutureBuilder<QuerySnapshot>(
+        future: storygram.firestore
             .collection('timeline')
             .orderBy('timestamp', descending: false)
-            .snapshots(),
+            .get(),
         // ignore: missing_return
         builder: (context, dataSnapShot) {
           if (!dataSnapShot.hasData) {
@@ -48,7 +48,7 @@ class _TimeLinePageState extends State<TimeLinePage>
             children: allPosts,
           );
         },
-      )),
+      ),
     );
   }
 }
@@ -144,29 +144,49 @@ class _AllPostsState extends State<AllPosts> {
       padding: EdgeInsets.all(8.0),
       child: Column(
         children: [
-          createPostHead(),
+
           Container(
             width: MediaQuery.of(context).size.width,
             child: Center(
                 child: GestureDetector(
               onDoubleTap: () => controlUserLikePost(),
-              child: Stack(
-                children: [
-                  Image(
-                    image: NetworkImage(widget.url),
-                  ),
-                  showHeart
-                      ? Icon(
-                          Icons.favorite,
-                          size: 140,
-                          color: Colors.pink,
-                        )
-                      : Text(''),
-                ],
+              // onLongPress:()=> storygram.firestore.collection('timeline').doc().delete(),
+              child: Padding(
+                padding:  EdgeInsets.only(top: 8.0,bottom: 8.0),
+                child: Stack(
+                  children: [
+                    Image(
+                      image: NetworkImage(widget.url),
+                    ),
+                    showHeart
+                        ? Icon(
+                            Icons.favorite,
+                            size: 140,
+                            color: Colors.pink,
+                          )
+                        : Text(''),
+                    Positioned(
+                      bottom: 0,
+                      child: Opacity(opacity: 0.6, child: Container(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width ,
+                        child: creatPostFooter(),
+                      )),
+                    ),
+                    Positioned(
+                      top: 0,
+                      child: Opacity(opacity: 0.8, child: Container(
+                        color: Colors.black12,
+                        height: 60,
+                        width: MediaQuery.of(context).size.width ,
+                        child: createPostHead(),
+                      )),
+                    ),
+                  ],
+                ),
               ),
             )),
           ),
-          creatPostFooter(),
         ],
       ),
     );
@@ -204,9 +224,7 @@ class _AllPostsState extends State<AllPosts> {
                     Icons.more_vert,
                     color: Colors.white,
                   ),
-                  onPressed: () async{
-                   await storygram.firestore.collection('timeline').doc().delete();
-                  },
+                  onPressed: () => controlDeletePost(context),
                 )
               : Text(''),
         );
@@ -414,31 +432,10 @@ class _AllPostsState extends State<AllPosts> {
 
 //this for delete post from firebase and storage and comment collection
   removeUserPost() async {
-    postsReference
-        .doc(ownerID)
-        .collection('userPosts')
-        .doc(postID)
-        .get()
-        .then((document) {
-      if (document.exists) {
-        document.reference.delete();
-      }
-    });
-    storageReference.child('post_$postID.jpg').delete();
-
-    QuerySnapshot querySnapshot = await activityFeedReference
-        .doc(ownerID)
-        .collection('feedItems')
-        .where('postID', isEqualTo: postID)
-        .get();
-    querySnapshot.docs.forEach((document) {
-      if (document.exists) {
-        document.reference.delete();
-      }
-    });
-   await storygram.firestore
+    // storageReference.child('post_$postID.jpg').delete();
+    await storygram.firestore
         .collection('timeline')
-        .doc(ownerID + postID)
+        .doc(postID)
         .get()
         .then((document) {
       if (document.exists) {
